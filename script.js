@@ -1,5 +1,4 @@
-// console.log("Hello World");
-function getComputerChoice(){
+ function getComputerChoice(){
     let numberPicked = Math.random();
     if (numberPicked <= 0.33) {
         return "rock";
@@ -8,70 +7,82 @@ function getComputerChoice(){
     } else{
         return "scissors";
     }    
-}
-// console.log(getComputerChoice());
+};
 
-function getHumanChoice(){
-    let choice = prompt("Enter one of the three choices of the game (Rock, Paper or Scissors): ").toLowerCase();
-    while (choice !== "rock" && choice !== "paper" && choice !== "scissors"){
-        console.log("Invalid choice. Please try again.");
-        choice = prompt("Enter one of the three choices of the game (Rock, Paper or Scissors): ").toLowerCase();
-
-    }
-    return choice
-}
-// console.log(getHumanChoice())
-
-function playRound(computerChoice, humanChoice){
-    if (computerChoice === humanChoice){
+function playRound(computerChoice, humanChoice) {
+    if (computerChoice === humanChoice) {
         return "It is a tie";
-    } else if (computerChoice === "rock" && humanChoice === "paper"){
+    } else if (computerChoice === "rock" && humanChoice === "paper") {
         return "You win, paper beats rock";
-    } else if (computerChoice === "scissors" && humanChoice === "rock"){
+    } else if (computerChoice === "scissors" && humanChoice === "rock") {
         return "You win, rock beats scissors";
-    } else if (computerChoice === "paper" && humanChoice === "scissors"){
+    } else if (computerChoice === "paper" && humanChoice === "scissors") {
         return "You win, scissors beats paper";
     } else {
         return `You lost, ${computerChoice} beats ${humanChoice}`;
     }
-    
-}
+};
 
-function playGame(){
-    console.log("The game is starting!");
+let humanScore = 0;
+let computerScore = 0;
+let gameOverStatus = false;
 
-    let humanScore = 0;
-    let computerScore = 0;
+const score = document.querySelector("#score");
+const results = document.querySelector("#result");
+const gameOver = document.querySelector("#game-over");
+const resetButton = document.querySelector("#reset");
 
-    for (let i = 1; i <= 5; i++){
-        console.log(`This is round ${i}`);
 
-        let computerChoice = getComputerChoice();
-        let humanChoice = getHumanChoice();
+const rockButton = document.querySelector("#rock");
 
-        let result = playRound(computerChoice, humanChoice);
-        console.log(result)
+const paperButton = document.querySelector("#paper");
 
-        if (result.includes("You win")){
-            humanScore += 1;
-        } else if(result.includes("You lost")){
-            computerScore += 1;
-        }
+const scissorsButton = document.querySelector("#scissors");
 
-        console.log("Human: ", humanChoice);
-        console.log("Computer: ", computerChoice);
-        
-        
+function playGameRound(humanChoice){
+    if (gameOverStatus){
+        return;
     }
-        console.log(`Result: human: ${humanScore} computer: ${computerScore}`)
 
-        if (humanScore > computerScore){
-            console.log("You win the game");
-        } else if (humanScore < computerScore){
-            console.log("Computer wins the game")
-        } else {
-            console.log("It is a tie")
-        }
-}
+    const computerChoice = getComputerChoice();
+    const result = playRound(computerChoice, humanChoice);
 
-playGame();
+    results.textContent = result;
+    if (result.includes("You win")){
+        humanScore += 1;
+    } else if (result.includes("You lost")){
+        computerScore += 1;
+    }
+    score.textContent = `Player: ${humanScore} | Computer: ${computerScore}`
+
+    if(humanScore === 5){
+        gameOverStatus = true;
+        gameOver.textContent = "You win the game" ;
+    }else if (computerScore === 5){
+        gameOverStatus = true;
+        gameOver.textContent = "Computer wins the game"
+    }
+};
+
+rockButton.addEventListener("click", function(){
+    playGameRound("rock");
+});
+
+paperButton.addEventListener("click", function(){
+    playGameRound("paper");
+})
+
+scissorsButton.addEventListener("click", function(){
+    playGameRound("scissors");
+})
+
+resetButton.addEventListener("click", function(){
+    humanScore = 0;
+    computerScore = 0;
+    gameOverStatus = false;
+
+    score.textContent = "Player: 0 | Computer: 0";
+    results.textContent = "";
+    gameOver.textContent = "";
+});
+   
